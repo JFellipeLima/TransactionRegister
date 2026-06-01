@@ -1,10 +1,12 @@
+/**
+ * Routes for transactions methods
+ */
 import dataController from "../controller/dataControllers.js"
-import dataSchema from "../model/dataSchema.js"
+import { transactionSchema, querySchema } from "../model/dataSchema.js"
 import dataService from "../service/dataService.js"
 import { Router } from "express"
 
-const schema = new dataSchema()
-const service =  new dataService(schema)
+const service =  new dataService(transactionSchema, querySchema)
 const controller = new dataController(service)
 
 const router = Router()
