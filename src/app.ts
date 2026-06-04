@@ -1,5 +1,5 @@
 import dotenv from "dotenv";dotenv.config()
-import dataRoutes from "./routes/dataRoutes.js"
+import dataRoutes from "./routes/transactions.route.js"
 import express from "express"
 
 const app = express()

@@ -1,17 +1,26 @@
 import type { Response, Request } from "express"
-import type { Itransaction, Iquery } from "../model/dataSchema.js"
-import type dataService from "../service/dataService.js"
+import type { Itransaction } from "../type/transaction.type.js"
+import type { Iquery } from "../type/transaction.query.type.js"
+import type TransactionsService from "../service/transactions.service.js"
 
 /**
  * Controller of transactions
+ * Responsável por receber as chamadas HTTP e enviar a resposta para o usuário.
+ * Ele não decide as regras de negócio, apenas repassa para o Service.
  */
-export default class dataController {
-    service: dataService
+export default class TransactionsController {
+    service: TransactionsService
     
-    constructor (service: dataService) {
+    constructor (service: TransactionsService) {
         this.service = service
     }
 
+    /**
+     * Handle request to list all transactions
+     * @param req - Express Request
+     * @param res - Express Response
+     * Endpoint para listar transações.
+     */
     public view = async (req: Request, res: Response): Promise<Response> => {
         const query = req.query as Iquery
         const result: Itransaction[] = await this.service.view(query)
@@ -19,6 +28,12 @@ export default class dataController {
         return res.send(result)
     }
 
+    /**
+     * Handle request to find a transaction by ID parameter
+     * @param req - Express Request
+     * @param res - Express Response
+     * Endpoint para buscar uma única transação pelo ID.
+     */
     public findById = async (req: Request, res: Response): Promise<Response> => {
         const { id } = req.params
         if (typeof id !== "string" || !id) {
@@ -34,13 +49,25 @@ export default class dataController {
         return res.send(result)
     }
 
+    /**
+     * Handle request to create a new transaction
+     * @param req - Express Request
+     * @param res - Express Response
+     * Endpoint para criar uma transação.
+     */
     public create = async (req: Request, res: Response): Promise<Response> => {
         const transaction = req.body as Itransaction
-        await this.service.create(transaction)
+        const data = await this.service.create(transaction)
 
-        return res.status(201).send()
+        return res.status(201).send(data)
     }
 
+    /**
+     * Handle request to update an existing transaction
+     * @param req - Express Request
+     * @param res - Express Response
+     * Endpoint para editar dados de uma transação.
+     */
     public update = async (req: Request, res: Response): Promise<Response> => {
         const { id } = req.params
         if (typeof id !== "string" || !id) {
@@ -57,6 +84,12 @@ export default class dataController {
         return res.send(result)
     }
 
+    /**
+     * Handle request to remove a transaction
+     * @param req - Express Request
+     * @param res - Express Response
+     * Endpoint para deletar uma transação.
+     */
     public delete = async (req: Request, res: Response): Promise<Response> => {
         const { id } = req.params
         if (typeof id !== "string" || !id) {
