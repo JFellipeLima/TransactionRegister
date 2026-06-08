@@ -1,0 +1,38 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../src/generated/client"
+}
+
+generator zod {
+  provider = "zod-prisma-types"
+  output = "../src/generated/schemas"
+}
+datasource db {
+  provider = "postgresql"
+}
+enum Type {
+  entrada
+  saida
+}
+
+enum Category {
+  food
+  transport
+  education
+  health
+  other
+  salary
+  investment
+} 
+
+model transaction {
+  id String @id @default(uuid())
+  type Type
+  category Category
+  /// @zod.number.positive({message: "O valor deve ser positivo"})
+  value Float
+  date DateTime @default(now())
+  /// @zod.string.min(5, {message: "A descrição deve ter no mínimo 5 caracteres"})
+  desc String 
+}

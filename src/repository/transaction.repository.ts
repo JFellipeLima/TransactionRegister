@@ -1,50 +1,60 @@
-import type { Itransaction} from "../type/transaction.type.js" 
-import type { Iquery } from "../type/transaction.query.type.js"
+import type IRepo from "./repository.interface.js";
+import type { Itransaction } from "../type/transaction.type.js";
+import prisma from "../database/prisma.js";
 
 /**
- * Interface for transaction persistence
- * Contrato que define como o sistema deve lidar com os dados.
- * Isso permite que a lógica principal não fique presa a um banco específico.
+ * Adaptador de Persistência para Transações usando Prisma
+ * Implementa o contrato definido pela IRepo (Porto de Saída).
  */
-export default interface TransactionRepository {
+export default class TransactionsRepository implements IRepo<Itransaction> {
     /**
-     * Get all transactions
-     * @returns Array of transactions
-     * Pega todas as transações
+     * Busca todos os registros no banco de dados
      */
-    view(): Promise<Itransaction[]>,
+    public view = async () => {
+        const results = await prisma.transaction.findMany()
+        return results as Itransaction[]
+    }
 
     /**
-     * Find a transaction by its unique identifier
-     * @param id - Transaction ID
-     * @returns Transaction object or undefined
-     * Procura uma transação pelo ID
+     * Busca um registro por ID único
      */
-    findById(id: string): Promise<Itransaction | undefined>,
+    public findById = async (id: string) => {
+        const result = await prisma.transaction.findUnique({ where: { id } })
+        return result ?? null
+    }
 
     /**
-     * Save a new transaction
-     * @param id - Unique identifier
-     * @param transaction - Data to be saved
-     * @returns The saved transaction
-     * Salva uma nova transação
+     * Insere um novo registro
      */
-    create(id: string, transaction: Itransaction): Promise<Itransaction>,
+    public create = async (data: Itransaction) => {
+        const result = await prisma.transaction.create({ data })
+        return result as Itransaction
+    }
 
     /**
-     * Update an existing transaction
-     * @param id - Transaction ID
-     * @param transaction - New data
-     * @returns Updated transaction or null
-     * Atualiza uma transação que já existe
+     * Atualiza os dados de um registro
      */
-    update(id: string, transaction: Itransaction): Promise<Itransaction | null>,
+    public update = async (id: string, data: Itransaction) => {
+        try {
+            const result = await prisma.transaction.update({
+                where: { id },
+                data
+            })
+            return result as Itransaction
+        } catch {
+            return null
+        }
+    }
 
     /**
-     * Remove a transaction from storage
-     * @param id - Transaction ID
-     * @returns True if deleted, false otherwise
-     * Apaga uma transação
+     * Remove um registro do banco de dados
      */
-    delete(id: string): Promise<boolean>
+    public delete = async (id: string) => {
+        try {
+            await prisma.transaction.delete({ where: { id } })
+            return true
+        } catch {
+            return false
+        }
+    }
 }
