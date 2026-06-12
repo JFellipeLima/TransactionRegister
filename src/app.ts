@@ -1,10 +1,5 @@
-/**
- * Application Entry Point
- * Configuração principal do servidor Express, middlewares e inicialização das rotas.
- */
-
-import { env } from "./config/env.js"
-import dataRoutes from "./routes/transaction.route.js"
+import { env } from "./infra/config/env.js"
+import dataRoutes from "./infra/adapters/primary/http/transaction.route.js"
 import express from "express"
 
 const app = express()

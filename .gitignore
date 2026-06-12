@@ -1,5 +1,10 @@
-sla.http
-node_modules
+node_modules/
+
+/dist/
+/build/
+
 .env
-/src/generated/
-/tsc/prisma/migrations
+.env.*
+*.http
+
+/src/infra/generated/

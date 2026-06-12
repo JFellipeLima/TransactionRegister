@@ -1,14 +1,10 @@
-/**
- * Rotas para os métodos de transações
- * Centraliza a definição das rotas de transações e a injeção de dependências.
- */
 import { Router } from "express"
 
-import TransactionsController from "../controller/transaction.controller.js"
-import TransactionsService from "../service/transaction.service.js"
-import transactionRepository from "../repository/transaction.repository.js"
+import TransactionsController from "./transaction.controller.js"
+import TransactionsService from "../../../../application/services/transaction.service.js"
+import TransactionRepository from "../../secondary/transaction.repository.js"
 
-const repo = new transactionRepository()
+const repo = new TransactionRepository()
 const service =  new TransactionsService(repo)
 const controller = new TransactionsController(service)
 
