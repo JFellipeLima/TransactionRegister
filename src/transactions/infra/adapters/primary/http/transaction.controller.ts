@@ -52,7 +52,6 @@ export default class TransactionsController {
         }
 
         return res.status(201).json(result)
-
     }
 
     public delete = async (req: Request, res: Response): Promise<Response> => {

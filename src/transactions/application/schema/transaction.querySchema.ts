@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { $Enums as enums} from "../../infra/generated/client/index.js" 
+import { $Enums as enums } from "../../../shared/generated/client/index.js" 
 
 export const QuerySchema = z.object({
     start: z.coerce.date(),

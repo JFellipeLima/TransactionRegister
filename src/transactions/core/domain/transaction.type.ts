@@ -4,5 +4,5 @@ export type Itransaction = {
     category: "food" | "transport" | "education" | "health" | "other" | "salary" | "investment" 
     value: number
     desc: string
-    date: Date
+    date: Date,
 }

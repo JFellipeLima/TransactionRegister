@@ -1,7 +1,7 @@
 import type { Iquery } from "../../../core/domain/query.type.js";
-import { Prisma } from "../../generated/client/index.js";
+import { Prisma } from "../../../../shared/generated/client/index.js";
 
-type TransactionWhere = Prisma.transactionWhereInput
+type TransactionWhere = Prisma.TransactionWhereInput
 
 export default class TransactionsFilter {
     public static build(query?: Iquery): TransactionWhere { 

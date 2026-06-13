@@ -12,7 +12,7 @@ const router = Router()
 
 router.get("/transactions/view", controller.view)
 
-router.get("/transactions/find/:id", controller.findById)
+router.get("/transactions/:id", controller.findById)
 
 router.post("/transactions/", controller.create)
 

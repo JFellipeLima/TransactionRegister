@@ -1,13 +1,13 @@
 import type RepositoryAdapter from "../../../core/ports/repository.interface.js";
 import type { Itransaction } from "../../../core/domain/transaction.type.js";
 import transactionsFilter from "../secondary/transaction.filter.js"
-import prisma from "../../../infra/database/prisma.js";
+import prisma from "../../../../shared/database/prisma.js";
 import type { Iquery } from "../../../core/domain/query.type.js";
-import type { transaction } from "../../../infra/generated/client/index.js"
+import type { Transaction } from "../../../../shared/generated/client/index.js";
 
 export default class TransactionsRepository implements RepositoryAdapter<Itransaction> {
 
-    private mapToEntity = (i: any): Itransaction => ({
+    private mapToEntity = (i: Transaction): Itransaction => ({
         id: i.id,
         type: i.type,
         category: i.category,

@@ -1,12 +1,12 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../src/generated/client"
+  output = "../src/shared/generated/client"
 }
 
 generator zod {
   provider = "zod-prisma-types"
-  output = "../src/generated/schemas"
+  output = "../src/shared/generated/schemas"
 }
 datasource db {
   provider = "postgresql"
@@ -26,7 +26,7 @@ enum Category {
   investment
 } 
 
-model transaction {
+model Transaction {
   id String @id @default(uuid())
   type Type
   category Category
@@ -34,5 +34,16 @@ model transaction {
   value Float
   date DateTime @default(now())
   /// @zod.string.min(5, {message: "A descrição deve ter no mínimo 5 caracteres"})
-  desc String 
+  desc String
+  userID String
+  User User @relation(fields: [userID], references: [id])
+}
+
+model User {
+  id String @id @default(uuid())
+  /// @zod.string
+  name String @unique
+  /// @zod.string.min(8, { message: "A senha deve ter no mínimo 8 caracteres" })
+  password String
+  transactions Transaction[]
 }
