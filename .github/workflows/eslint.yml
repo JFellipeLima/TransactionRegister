@@ -38,6 +38,7 @@ jobs:
       - name: Run ESLint
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
         run: npx eslint .
           --config .eslintrc.js
           --ext .js,.jsx,.ts,.tsx
