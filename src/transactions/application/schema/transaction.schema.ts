@@ -8,4 +8,6 @@ export const TransactionSchema = z.object({
     value: z.number().positive("O valor deve ser maior que zero"),
     desc: z.string().min(1, "A descrição é obrigatória"),
     date: z.coerce.date(),
+    userID: z.string()
+
 }).strict()

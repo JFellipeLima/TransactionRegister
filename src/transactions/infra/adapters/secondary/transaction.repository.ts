@@ -1,55 +1,82 @@
-import type RepositoryAdapter from "../../../core/ports/repository.interface.js";
-import type { Itransaction } from "../../../core/domain/transaction.type.js";
+import type RepositoryAdapter from "../../../../shared/ports/repository.interface.js";
+import type { Transaction, CreateTransactionDTO, UpdateTransactionDTO } from "../../../core/domain/transaction.type.js";
 import transactionsFilter from "../secondary/transaction.filter.js"
 import prisma from "../../../../shared/database/prisma.js";
 import type { Iquery } from "../../../core/domain/query.type.js";
-import type { Transaction } from "../../../../shared/generated/client/index.js";
+import Prisma from "../../../../shared/generated/client/index.js";
+import * as errors from "../../../../shared/helper/errors.js";
 
-export default class TransactionsRepository implements RepositoryAdapter<Itransaction> {
+export default class TransactionsRepository implements RepositoryAdapter<Transaction, CreateTransactionDTO, UpdateTransactionDTO, Iquery> {
 
-    private mapToEntity = (i: Transaction): Itransaction => ({
+    private mapToEntity = (i: Prisma.Transaction): Transaction => ({
         id: i.id,
         type: i.type,
         category: i.category,
         value: i.value,
         desc: i.desc,
-        date: i.date
+        date: i.date,
+        userID: i.userID
     })
 
-    public view = async (query?: Iquery) => {
+    public view = async (query?: Iquery): Promise<Transaction[]> => {
         const buildQuery = transactionsFilter.build(query)
         const results = await prisma.transaction.findMany({ where: buildQuery })
         return results.map(this.mapToEntity)
     }
 
-    public findById = async (id: string) => {
+    public findById = async (id: string): Promise<Transaction | null> => {
         const result = await prisma.transaction.findUnique({ where: { id } })
         return result ? this.mapToEntity(result) : null
     }
 
-    public create = async (item: Itransaction) => {
-        const result = await prisma.transaction.create({ data: item as any })
-        return this.mapToEntity(result)
-    }
-
-    public update = async (id: string, item: Partial<Itransaction>) => {
+    public create = async (item: CreateTransactionDTO): Promise<Transaction> => {
         try {
-            const result = await prisma.transaction.update({
-                where: { id },
-                data: item as any
-            })
+            const result = await prisma.transaction.create({ data: item as any })
             return this.mapToEntity(result)
-        } catch {
-            return null
+        } catch (error) {
+            if (error instanceof Prisma.Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    throw new errors.InvalidDataError(`Transaction with provided data already exists.`);
+                }
+                if (error.code === 'P2003') {
+                    throw new errors.NotFoundError(`User ID provided does not exist.`);
+                }
+            }
+            throw error;
         }
     }
 
-    public delete = async (id: string) => {
+    public update = async (id: string, item: UpdateTransactionDTO): Promise<Transaction | null> => {
         try {
-            await prisma.transaction.delete({ where: { id } })
-            return true
-        } catch {
-            return false
+            const result = await prisma.transaction.update({
+                where: { id },
+                data: item
+            })
+            return this.mapToEntity(result)
+        } catch (error) {
+            if (error instanceof Prisma.Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2025') {
+                    throw new errors.NotFoundError(`Transaction with ID ${id} not found.`);
+                }
+                if (error.code === 'P2002') {
+                    throw new errors.InvalidDataError(`Update would violate a unique constraint.`);
+                }
+            }
+            throw error;
+        }
+    }
+    
+    public delete = async (id: string): Promise<Transaction> => {
+        try {
+            const deleted = await prisma.transaction.delete({ where: { id } })
+            return this.mapToEntity(deleted)
+        } catch (error) {
+            if (error instanceof Prisma.Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2025') {
+                    throw new errors.NotFoundError(`Transaction with ID ${id} not found.`);
+                }
+            }
+            throw error;
         }
     }
 }

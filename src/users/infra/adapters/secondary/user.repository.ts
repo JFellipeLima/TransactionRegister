@@ -1,9 +1,9 @@
 import prisma from "../../../../shared/database/prisma.js"
 import type { IUser } from "../../../core/domain/user.type.js"
-import type { UserRepo } from "../../../core/ports/user.interface.js"
+import type RepositoryAdapter from "../../../../shared/ports/repository.interface.js"
 import type { User } from "../../../../shared/generated/client/index.js"
 
-export default class UserRepository implements UserRepo<IUser>{
+export default class UserRepository implements RepositoryAdapter<IUser>{
 
     private mapToEntity = (i: User): IUser => ({
         id: i.id,
@@ -11,12 +11,12 @@ export default class UserRepository implements UserRepo<IUser>{
         password: i.password
     })
 
-    public getAll = async () => {
+    public view = async () => {
         const results = await prisma.user.findMany()
         return results.map(this.mapToEntity)
     }
 
-    public getById = async (id: string) => {
+    public findById = async (id: string) => {
         const result = await prisma.user.findUnique({ where: { id } })
         return result ? this.mapToEntity(result) : null
     }
@@ -39,11 +39,7 @@ export default class UserRepository implements UserRepo<IUser>{
     }
 
     public delete = async (id: string) => {
-        try {
-            await prisma.user.delete({ where: { id } })
-            return true
-        } catch {
-            return false
-        }
+        return await prisma.user.delete({ where: { id } })
+        
     }
 }

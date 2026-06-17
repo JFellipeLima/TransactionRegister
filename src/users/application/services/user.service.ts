@@ -1,20 +1,20 @@
-import type { UserRepo } from "../../core/ports/user.interface.js"
+import type RepositoryAdapter from "../../../shared/ports/repository.interface.js"
 import type { IUser } from "../../core/domain/user.type.js"
 import { UserSchema } from "../schemas/user.schema.js"
 
 export default class UserService {
-    private repo: UserRepo<IUser>
+    private repo: RepositoryAdapter<IUser>
 
-    constructor(repo: UserRepo<IUser>) {
+    constructor(repo: RepositoryAdapter<IUser>) {
         this.repo = repo
     }
 
     async getAll() {
-        return await this.repo.getAll()
+        return await this.repo.view()
     }
 
     async getById(id: string) {
-        return await this.repo.getById(id)
+        return await this.repo.findById(id)
     }
 
     async create(user: IUser) {
