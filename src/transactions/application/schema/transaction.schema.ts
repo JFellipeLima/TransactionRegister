@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { $Enums as enums } from "../../../shared/generated/client/index.js"
 
-export const TransactionSchema = z.object({
+export const TransactionBodySchema = z.object({
     id: z.string().optional(),
     type: z.enum(enums.Type),
     category: z.enum(enums.Category),
@@ -11,3 +11,12 @@ export const TransactionSchema = z.object({
     userID: z.string()
 
 }).strict()
+
+export const QuerySchema = z.object({
+    start: z.coerce.date(),
+    end: z.coerce.date(),
+    type: z.enum(enums.Type),
+    category: z.enum(enums.Category), 
+}).partial().strict()
+
+export const idParamsSchema = z.object({ id: z.string("ID inválido") });

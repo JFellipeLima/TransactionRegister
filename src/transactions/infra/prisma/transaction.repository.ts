@@ -1,10 +1,10 @@
-import type RepositoryAdapter from "../../../../shared/ports/repository.interface.js";
-import type { Transaction, CreateTransactionDTO, UpdateTransactionDTO } from "../../../core/domain/transaction.type.js";
-import transactionsFilter from "../secondary/transaction.filter.js"
-import prisma from "../../../../shared/database/prisma.js";
-import type { Iquery } from "../../../core/domain/query.type.js";
-import Prisma from "../../../../shared/generated/client/index.js";
-import * as errors from "../../../../shared/helper/errors.js";
+import type RepositoryAdapter from "../../domain/transaction.repository.interface.js";
+import type { Transaction, CreateTransactionDTO, UpdateTransactionDTO } from "../../domain/transaction.type.js";
+import type { Iquery } from "../../domain/transaction.type.js";
+import transactionsFilter from "../prisma/transaction.filter.js"
+import prisma from "../../../shared/database/prisma.js";
+import Prisma from "../../../shared/generated/client/index.js";
+import * as errors from "../../../shared/helper/errors.js";
 
 export default class TransactionsRepository implements RepositoryAdapter<Transaction, CreateTransactionDTO, UpdateTransactionDTO, Iquery> {
 
@@ -31,7 +31,7 @@ export default class TransactionsRepository implements RepositoryAdapter<Transac
 
     public create = async (item: CreateTransactionDTO): Promise<Transaction> => {
         try {
-            const result = await prisma.transaction.create({ data: item as any })
+            const result = await prisma.transaction.create({ data: item })
             return this.mapToEntity(result)
         } catch (error) {
             if (error instanceof Prisma.Prisma.PrismaClientKnownRequestError) {
@@ -56,13 +56,13 @@ export default class TransactionsRepository implements RepositoryAdapter<Transac
         } catch (error) {
             if (error instanceof Prisma.Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2025') {
-                    throw new errors.NotFoundError(`Transaction with ID ${id} not found.`);
+                    throw new errors.NotFoundError(`Transaction not found.`)
                 }
                 if (error.code === 'P2002') {
-                    throw new errors.InvalidDataError(`Update would violate a unique constraint.`);
+                    throw new errors.InvalidDataError(`Update would violate a unique constraint.`)
                 }
             }
-            throw error;
+            throw error
         }
     }
     
@@ -73,10 +73,10 @@ export default class TransactionsRepository implements RepositoryAdapter<Transac
         } catch (error) {
             if (error instanceof Prisma.Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2025') {
-                    throw new errors.NotFoundError(`Transaction with ID ${id} not found.`);
+                    throw new errors.NotFoundError(`Transaction not found.`)
                 }
             }
-            throw error;
+            throw error
         }
     }
 }

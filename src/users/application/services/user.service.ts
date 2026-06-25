@@ -1,33 +1,33 @@
-import type RepositoryAdapter from "../../../shared/ports/repository.interface.js"
-import type { IUser } from "../../core/domain/user.type.js"
-import { UserSchema } from "../schemas/user.schema.js"
+import type RepositoryAdapter from "../../domain/user.repository.interface.js"
+import type { IUser } from "../../domain/user.type.js"
+import bcrypt from "bcrypt"
 
 export default class UserService {
-    private repo: RepositoryAdapter<IUser>
+    private repo: RepositoryAdapter
 
-    constructor(repo: RepositoryAdapter<IUser>) {
+    constructor(repo: RepositoryAdapter) {
         this.repo = repo
     }
 
-    async getAll() {
+    getAll = async () => {
         return await this.repo.view()
     }
 
-    async getById(id: string) {
+    getById = async (id: string) => {
         return await this.repo.findById(id)
     }
 
-    async create(user: IUser) {
-        const validated = UserSchema.parse(user)
-        return await this.repo.create(validated)
+    create = async (user: IUser) =>{
+        const hashed = await bcrypt.hash(user.password, 10)
+        user = {...user, password: hashed}
+        return await this.repo.create(user)
     }
 
-    async update(id: string, user: Partial<IUser>) {
-        const validated = UserSchema.partial().parse(user)
-        return await this.repo.update(id, validated)
+    update = async (id: string, user: Partial<IUser>) => {
+        return await this.repo.update(id, user)
     }
 
-    async delete(id: string) {
+    delete = async (id: string) => {
         return await this.repo.delete(id)
     }
 

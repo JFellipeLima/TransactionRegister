@@ -8,5 +8,11 @@ export type Transaction = {
     userID: string
 }
 
+export type Iquery = {
+    start?: Date
+    end?: Date
+    type?: "entrada" | "saida"
+    category?: "food" | "transport" | "education" | "health" | "other" | "salary" | "investment"
+}
 export type CreateTransactionDTO = Omit<Transaction, "id">;
 export type UpdateTransactionDTO = Partial<CreateTransactionDTO>;

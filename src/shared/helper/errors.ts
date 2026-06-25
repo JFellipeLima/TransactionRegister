@@ -21,10 +21,3 @@ export class InvalidDataError extends baseError {
         Object.setPrototypeOf(this, InvalidDataError.prototype);
     }
 }
-
-export class ConflictError extends baseError {
-    constructor(message: string = "Conflict with existing resource") {
-        super(message, 409);
-        Object.setPrototypeOf(this, ConflictError.prototype);
-    }
-}

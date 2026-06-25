@@ -4,3 +4,4 @@ export type IUser = {
     password: string
 
 }
+export type IUserPub = Omit<IUser, "password">

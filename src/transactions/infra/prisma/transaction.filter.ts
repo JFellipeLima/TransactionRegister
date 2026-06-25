@@ -1,5 +1,5 @@
-import type { Iquery } from "../../../core/domain/query.type.js";
-import { Prisma } from "../../../../shared/generated/client/index.js";
+import type { Iquery } from "../../domain/transaction.type.js";
+import { Prisma } from "../../../shared/generated/client/index.js";
 
 type TransactionWhere = Prisma.TransactionWhereInput
 

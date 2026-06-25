@@ -1,6 +1,6 @@
-import type RepositoryAdapter from "../../../shared/ports/repository.interface.js";
-import type { Transaction, CreateTransactionDTO, UpdateTransactionDTO } from "../../core/domain/transaction.type.js";
-import type { Iquery } from "../../core/domain/query.type.js";
+import type RepositoryAdapter from "../../domain/transaction.repository.interface.js";
+import type { Transaction, CreateTransactionDTO, UpdateTransactionDTO } from "../../domain/transaction.type.js";
+import type { Iquery } from "../../domain/transaction.type.js";
 
 export default class TransactionsService {
     private repo: RepositoryAdapter<Transaction, CreateTransactionDTO, UpdateTransactionDTO, Iquery>
